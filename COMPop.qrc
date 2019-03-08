@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/COMPop">
+        <file>Resources/systray.png</file>
+    </qresource>
+</RCC>
