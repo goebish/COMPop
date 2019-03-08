@@ -71,27 +71,26 @@ void compop::timerTimeout()
     for(i=0; i<serList.count(); i++) {
         newList.append(serList[i].description() + QString(" (") + serList[i].portName() + QString(")"));
     }
-    if(firstRun) {
-        list = newList;
-        firstRun = false;
-    }
     if(list != newList) {
-        // search for new ports
-        if(actionNotifyConnect->isChecked()) {
-            for(i=0; i<newList.count(); i++) {
-                if(list.indexOf(newList[i]) < 0) {
-                    trayIcon->showMessage("Port plugged in", newList[i], QSystemTrayIcon::Information, 20000);
+        if(!firstRun) {
+            // search for new ports
+            if(actionNotifyConnect->isChecked()) {
+                for(i=0; i<newList.count(); i++) {
+                    if(list.indexOf(newList[i]) < 0) {
+                        trayIcon->showMessage("Port plugged in", newList[i], QSystemTrayIcon::Information, 20000);
+                    }
+                }
+            }
+            // search for removed ports
+            if(actionNotifyDisconnect->isChecked()) {
+                for(i=0; i<list.count(); i++) {
+                    if(newList.indexOf(list[i]) < 0) {
+                        trayIcon->showMessage("Port plugged out", list[i], QSystemTrayIcon::Information, 20000);
+                    }
                 }
             }
         }
-        // search for removed ports
-        if(actionNotifyDisconnect->isChecked()) {
-            for(i=0; i<list.count(); i++) {
-                if(newList.indexOf(list[i]) < 0) {
-                    trayIcon->showMessage("Port plugged out", list[i], QSystemTrayIcon::Information, 20000);
-                }
-            }
-        }
+        firstRun = false;
         list = newList;
         if(list.isEmpty()) {
             trayIcon->setToolTip("Found no COM ports");
