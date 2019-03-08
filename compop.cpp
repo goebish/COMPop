@@ -42,7 +42,7 @@ compop::compop(QObject *parent)
 
     trayIcon = new QSystemTrayIcon(QIcon(QPixmap(":/COMPop/Resources/systray.png")));
     trayIcon->setContextMenu(trayIconMenu);
-    trayIcon->setToolTip("COMPop Virtual COM port notifier");
+    trayIcon->setToolTip("Found no COM ports");
     trayIcon->setVisible(true);
 
     loadSettings();
@@ -64,6 +64,7 @@ void compop::timerTimeout()
 {
     static QStringList list;
     QStringList newList;
+    QString tooltip;
     int i;
     // enumerate available ports
     QList<QSerialPortInfo> serList = QSerialPortInfo::availablePorts();
@@ -92,6 +93,15 @@ void compop::timerTimeout()
             }
         }
         list = newList;
+        if(list.isEmpty()) {
+            trayIcon->setToolTip("Found no COM ports");
+        }
+        else {
+            for(i=0; i<list.count(); i++) {
+                tooltip += list[i] + QString("\n");
+            }
+            trayIcon->setToolTip(tooltip);
+        }
     }
 }
 
@@ -122,7 +132,7 @@ void compop::saveSettings()
 
 void compop::menuAbout()
 {
-    QMessageBox::about(nullptr, "About COMPop", "COMPop Virtual COM port notifier\n(c) 2019 Goebish\nVersion 1.0.1\n\nUpdates:\nhttps://github.com/goebish/COMPop/releases");
+    QMessageBox::about(nullptr, "About COMPop", "COMPop Virtual COM port notifier\n(c) 2019 Goebish\nVersion 1.0.2\n\nUpdates:\nhttps://github.com/goebish/COMPop/releases");
 }
 
 void compop::menuQuit()
