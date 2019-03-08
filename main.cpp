@@ -18,54 +18,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
 #include <QtWidgets/QApplication>
-#include <QtGui/QIcon>
-#include <QtWidgets/QSystemTrayIcon>
-#include <QSerialPortInfo>
-#include <qthread.h>
+#include <QPixmap>
+#include <QIcon>
 #include <qsharedmemory.h>
-
-#define POLLING_PERIOD 2500
+#include "compop.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
     QSharedMemory shared("COMPop");
     // app already running ?
     if(!shared.create( 1, QSharedMemory::ReadWrite))
-		return 1;
-    uint8_t i;
-    bool firstRun = true;
-    QStringList list;
-    QSystemTrayIcon *trayIcon = new QSystemTrayIcon(QIcon(QPixmap(":/COMPop/Resources/systray.png")));
-    trayIcon->setToolTip("COMPop");
-    trayIcon->setVisible(true);
-    for(;;) {
-        QStringList newList;
-        // enumerate available ports
-        QList<QSerialPortInfo> serList = QSerialPortInfo::availablePorts();
-        for(i=0; i<serList.count(); i++) {
-            newList.append(serList[i].description() + QString(" (") + serList[i].portName() + QString(")"));
-        }
-        if(firstRun) {
-            list = newList;
-            firstRun = false;
-        }
-        if(list != newList) {
-            // search for new ports
-            for(i=0; i<newList.count(); i++) {
-                if(list.indexOf(newList[i]) < 0) {
-                    trayIcon->showMessage("Port Plugged in", newList[i], QSystemTrayIcon::Information, 20000);
-                }
-            }
-            // search for removed ports
-            for(i=0; i<list.count(); i++) {
-                if(newList.indexOf(list[i]) < 0) {
-                    trayIcon->showMessage("Port Plugged out", list[i], QSystemTrayIcon::Information, 20000);
-                }
-            }
-            list = newList;
-            continue;
-        }
-        QThread::msleep(POLLING_PERIOD);
-    }
+        return 1;
+    QApplication app(argc, argv);
+    app.setWindowIcon(QIcon(QPixmap(":/COMPop/Resources/systray.png")));
+    app.setQuitOnLastWindowClosed(false);
+    compop pop(app.instance());
+    return app.exec();
 }
