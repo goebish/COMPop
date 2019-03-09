@@ -20,7 +20,6 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu; 
     QTimer *timer;
-    bool firstRun;
     QPointer<QAction> actionNotifyConnect;
     QPointer<QAction> actionNotifyDisconnect;
     QPointer<QAction> actionStartup;

@@ -9,8 +9,6 @@
 compop::compop(QObject *parent)
     : QObject(parent)
 {
-    firstRun = true;
-    
     trayIconMenu = new QMenu();
     
     actionNotifyConnect = new QAction("Notify on connect", this);
@@ -63,6 +61,7 @@ compop::~compop()
 void compop::timerTimeout()
 {
     static QStringList list;
+    static bool firstRun = true;
     QStringList newList;
     QString tooltip;
     int i;
@@ -71,7 +70,7 @@ void compop::timerTimeout()
     for(i=0; i<serList.count(); i++) {
         newList.append(serList[i].description() + QString(" (") + serList[i].portName() + QString(")"));
     }
-    if(list != newList) {
+    if(list != newList || firstRun) {
         if(!firstRun) {
             // search for new ports
             if(actionNotifyConnect->isChecked()) {
