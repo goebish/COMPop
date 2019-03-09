@@ -5,6 +5,7 @@
 #include <QMenu>
 #include <QTimer>
 #include <QAction>
+#include <QPointer>
 
 #define POLLING_PERIOD 2500
 

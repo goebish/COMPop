@@ -21,11 +21,12 @@ compop::compop(QObject *parent)
     connect(actionNotifyDisconnect, SIGNAL(triggered()), this, SLOT(saveSettings()));
     trayIconMenu->addAction(actionNotifyDisconnect);
 
+#ifdef Q_OS_WIN
     actionStartup = new QAction("Launch on startup", this);
     actionStartup->setCheckable(true);
     connect(actionStartup, SIGNAL(triggered()), this, SLOT(saveSettings()));
     trayIconMenu->addAction(actionStartup);
-
+#endif
     trayIconMenu->addSeparator();
 
     actionAbout = new QAction("About", this);
@@ -68,6 +69,10 @@ void compop::timerTimeout()
     // enumerate available ports
     QList<QSerialPortInfo> serList = QSerialPortInfo::availablePorts();
     for(i=0; i<serList.count(); i++) {
+#ifdef Q_OS_DARWIN
+        if(serList[i].portName().indexOf("cu.") > -1 || serList[i].portName().indexOf("tty.") == -1)
+            continue;
+#endif
         newList.append(serList[i].description() + QString(" (") + serList[i].portName() + QString(")"));
     }
     if(list != newList || firstRun) {
@@ -108,7 +113,9 @@ void compop::loadSettings()
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Goebish Apps", "compop");
     actionNotifyConnect->setChecked(settings.value("NotifyConnect", "1") == "1");
     actionNotifyDisconnect->setChecked(settings.value("NotifyDisconnect", "1") == "1");
+#ifdef Q_OS_WIN
     actionStartup->setChecked(settings.value("Startup", "0") == "1");
+#endif
 }
 
 // Slots
@@ -118,6 +125,7 @@ void compop::saveSettings()
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Goebish Apps", "compop");
     settings.setValue("NotifyConnect", actionNotifyConnect->isChecked() ? "1" : "0");
     settings.setValue("NotifyDisconnect", actionNotifyDisconnect->isChecked() ? "1" : "0");
+#ifdef Q_OS_WIN
     settings.setValue("Startup", actionStartup->isChecked() ? "1" : "0");
     QSettings registry("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     if(actionStartup->isChecked()) {
@@ -126,6 +134,7 @@ void compop::saveSettings()
     else {
         registry.remove("compop");
     }
+#endif
 }
 
 void compop::menuAbout()
