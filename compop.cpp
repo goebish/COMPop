@@ -130,7 +130,7 @@ void compop::saveSettings()
 
 void compop::menuAbout()
 {
-    QMessageBox::about(nullptr, "About COMPop", "COMPop Virtual COM port notifier\n(c) 2019 Goebish\nVersion 1.0.2\n\nUpdates:\nhttps://github.com/goebish/COMPop/releases");
+    QMessageBox::about(nullptr, "About COMPop", "COMPop Virtual COM port notifier\n(c) 2019 Goebish\nVersion 1.0.3\n\nUpdates:\nhttps://github.com/goebish/COMPop/releases");
 }
 
 void compop::menuQuit()
