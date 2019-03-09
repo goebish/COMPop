@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>POPCom</string>
+	<string>COMPop</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Created by Qt/QMake</string>
 	<key>CFBundleIconFile</key>
 	<string>icon1.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.goebish.POPCom</string>
+	<string>org.goebish.COMPop</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
